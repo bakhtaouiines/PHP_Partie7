@@ -51,7 +51,8 @@ if (isset($_REQUEST['register'])) {
     <h1>Exercice 6 Partie 7 : Les Formulaires PHP</h1>
     <?php
     if (isset($_REQUEST['register']) && empty($formErrorList)) { ?>
-        <p><?= $firstname ?></p>
+        <p>Bonjour <?= $gender ?> <?=$firstname?><?=$lastname?></p>
+        
     <?php
     } else {
     ?>
@@ -68,7 +69,7 @@ if (isset($_REQUEST['register'])) {
             <?php
             if(!empty($formErrorList['choiceGender'])) {
                 ?>
-            <span class="error">* <p><?= $formErrorList['choiceGender']; ?></p></span>
+            <span class="error" style="color:#FF0000">* <p><?= $formErrorList['choiceGender']; ?></p></span>
                 <?php
             }
             ?>     
@@ -76,7 +77,7 @@ if (isset($_REQUEST['register'])) {
             <?php
             if(!empty($formErrorList['lastname'])) {
                 ?>
-            <span class="error">* <p><?= $formErrorList['lastname']; ?></p></span>
+            <span class="error" style="color:#FF0000">* <p><?= $formErrorList['lastname']; ?></p></span>
                 <?php
             }
             ?>  
@@ -84,7 +85,7 @@ if (isset($_REQUEST['register'])) {
             <?php
             if(!empty($formErrorList['firstname'])) {
                 ?>
-            <span class="error">* <p><?= $formErrorList['firstname']; ?></p></span>
+            <span class="error" style="color:#FF0000">* <p><?= $formErrorList['firstname']; ?></p></span>
                 <?php
             }
             ?>              
