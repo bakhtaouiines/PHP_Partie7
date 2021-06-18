@@ -1,5 +1,5 @@
 <?php
-$genderList = ['Monsieur' => 'M.', 'Madame' => 'Mme'];
+$genderList = ['Monsieur' => 'M', 'Madame' => 'Mme'];
 $formErrorList = [];
 
 ///////////////////////////////////////////////////////// je vérifie que le formulaire a bien été soumis
@@ -43,16 +43,20 @@ if (isset($_REQUEST['register'])) {
     } else {
         $formErrorList['choiceGender'] = 'Genre manquant';
     }
-
     // Vérification sur l'upload du fichier
     if (!empty($_REQUEST['file'])) {
-        $file = basename($_REQUEST['file']); //basename — Retourne le nom de la composante finale d'un chemin
-    } else {
-        $formErrorList['file'] = 'Erreur au téléchargement du fichier';
+        $file = basename($_REQUEST['file']);
+
+        // Vérification Extension du fichier
+        $fileType = pathinfo($file, PATHINFO_EXTENSION); //pathinfo - Retourne des informations sur un chemin système + option => spécifie quel élément sera retourné
+        $authorizedType = ['pdf'];
+        if ($fileType != $authorizedType[0]) {
+            $formErrorList['file'] = 'Seuls les fichiers PDF sont autorisés';
+        } else {
+            $formErrorList['file'] = 'Aucun fichier n\'a été téléchargé!';
+        }
     }
 }
-
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -61,11 +65,11 @@ if (isset($_REQUEST['register'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exercice 7.7</title>
+    <title>Exercice 7.8</title>
 </head>
 
 <body>
-    <h1>Exercice 7 Partie 7 : Les Formulaires PHP</h1>
+    <h1>Exercice 8 Partie 7 : Les Formulaires PHP</h1>
     <!-- Test sur les données pour savoir si elles ont bien été envoyé ET qu'il n'y a pas d'erreur -->
     <?php
     if (isset($_REQUEST['register']) && empty($formErrorList)) { ?>
@@ -81,7 +85,6 @@ if (isset($_REQUEST['register'])) {
     ?>
         <!---------------------------------- Affichage du formulaire si tout est OK ------------------------------>
         <form method="POST" action="index.php">
-            <!-- Civilité -->
             <select name="choiceGender">
                 <option value="" disabled selected>Veuillez choisir votre civilité</option>
                 <?php
@@ -98,7 +101,6 @@ if (isset($_REQUEST['register'])) {
             <?php
             }
             ?>
-            <!-- Nom -->
             <input type="text" name="lastname" placeholder="Nom">
             <?php
             if (!empty($formErrorList['lastname'])) {
@@ -107,7 +109,6 @@ if (isset($_REQUEST['register'])) {
             <?php
             }
             ?>
-            <!-- Prénom -->
             <input type="text" name="firstname" placeholder="Prénom">
             <?php
             if (!empty($formErrorList['firstname'])) {
@@ -121,9 +122,7 @@ if (isset($_REQUEST['register'])) {
             <?php
             if (!empty($formErrorList['file'])) {
             ?>
-                <span style="color:#FF0000">
-                    <p><?= $formErrorList['file']; ?></p>
-                </span>
+                <span style="color:#FF0000">* <p><?= $formErrorList['file']; ?></p></span>
             <?php
             }
             ?>
