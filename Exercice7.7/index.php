@@ -4,7 +4,7 @@ $formErrorList = [];
 
 ///////////////////////////////////////////////////////// je vérifie que le formulaire a bien été soumis
 
-if (isset($_REQUEST['register'])) {
+if (isset($_POST['register'])) {
     // Vérification REGEX + valeur Nom                                  
     $regex = '/^[A-Za-zÉÈËéèëÀÂÄàäâÎÏïîÔÖôöÙÛÜûüùÆŒÇç][A-Za-zÉÈËéèëÀÂÄàäâÎÏïîÔÖôöÙÛÜûüùÆŒÇç\-\s\']*$/';
     /*  $file = strtr($file, 'ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ', 'AAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyy'); 
@@ -12,9 +12,9 @@ if (isset($_REQUEST['register'])) {
         -> En dessous, il y a l'expression régulière qui remplace tout ce qui n'est pas une lettre non accentuées ou un chiffre dans $file par un tiret "-" et qui place le résultat dans $fichier.
     $file = preg_replace('/([^.a-z0-9]+)/i', '-', $file);*/
 
-    if (!empty($_REQUEST['lastname'])) {
-        if (preg_match($regex, $_REQUEST['lastname'])) {
-            $lastname = htmlspecialchars($_REQUEST['lastname']);
+    if (!empty($_POST['lastname'])) {
+        if (preg_match($regex, $_POST['lastname'])) {
+            $lastname = htmlspecialchars($_POST['lastname']);
         } else {
             $formErrorList['lastname'] = 'Les caractères saisis ne sont pas valides. Seuls les lettres avec des accents le sont pour le nom.';
         }
@@ -23,9 +23,9 @@ if (isset($_REQUEST['register'])) {
     }
 
     // Vérification REGEX + valeur Prénom
-    if (!empty($_REQUEST['firstname'])) {
-        if (preg_match($regex, $_REQUEST['firstname'])) {
-            $firstname = htmlspecialchars($_REQUEST['firstname']);
+    if (!empty($_POST['firstname'])) {
+        if (preg_match($regex, $_POST['firstname'])) {
+            $firstname = htmlspecialchars($_POST['firstname']);
         } else {
             $formErrorList['firstname'] = 'Les caractères saisis ne sont pas valides. Seuls les lettres avec des accents le sont pour le prénom.';
         }
@@ -34,9 +34,9 @@ if (isset($_REQUEST['register'])) {
     }
 
     // Vérification sur le genre
-    if (!empty($_REQUEST['choiceGender'])) {
-        if (in_array($_REQUEST['choiceGender'], $genderList)) {
-            $choiceGender = htmlspecialchars($_REQUEST['choiceGender']);
+    if (!empty($_POST['choiceGender'])) {
+        if (in_array($_POST['choiceGender'], $genderList)) {
+            $choiceGender = htmlspecialchars($_POST['choiceGender']);
         } else {
             $formErrorList['choiceGender'] = 'Vous n\'avez pas sélectionné un des genres proposé';
         }
@@ -45,8 +45,8 @@ if (isset($_REQUEST['register'])) {
     }
 
     // Vérification sur l'upload du fichier
-    if (!empty($_REQUEST['file'])) {
-        $file = basename($_REQUEST['file']); //basename — Retourne le nom de la composante finale d'un chemin
+    if (!empty($_FILES['file'])) {
+        $file = basename($_FILES['file']['name']); //basename — Retourne le nom de la composante finale d'un chemin
     } else {
         $formErrorList['file'] = 'Erreur au téléchargement du fichier';
     }
@@ -68,10 +68,10 @@ if (isset($_REQUEST['register'])) {
     <h1>Exercice 7 Partie 7 : Les Formulaires PHP</h1>
     <!-- Test sur les données pour savoir si elles ont bien été envoyé ET qu'il n'y a pas d'erreur -->
     <?php
-    if (isset($_REQUEST['register']) && empty($formErrorList)) { ?>
+    if (isset($_POST['register']) && empty($formErrorList)) { ?>
         <p>Bonjour <?= $choiceGender ?> <?= $firstname ?> <?= $lastname ?></p>
         <?php
-        if (isset($_REQUEST['file']) && empty($formErrorList)) { ?>
+        if (isset($_FILES['file']) && empty($formErrorList)) { ?>
             <p>Fichier téléchargé:
                 <?= $file ?>
             </p>
@@ -80,7 +80,7 @@ if (isset($_REQUEST['register'])) {
     } else {
     ?>
         <!---------------------------------- Affichage du formulaire si tout est OK ------------------------------>
-        <form method="POST" action="index.php">
+        <form method="POST" action="index.php" enctype="multipart/form-data">
             <!-- Civilité -->
             <select name="choiceGender">
                 <option value="" disabled selected>Veuillez choisir votre civilité</option>
@@ -121,9 +121,7 @@ if (isset($_REQUEST['register'])) {
             <?php
             if (!empty($formErrorList['file'])) {
             ?>
-                <span style="color:#FF0000">
-                    <p><?= $formErrorList['file']; ?></p>
-                </span>
+                <p><span style="color:#FF0000"><?= $formErrorList['file']; ?></span></p>
             <?php
             }
             ?>
